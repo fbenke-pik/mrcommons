@@ -17,7 +17,7 @@
 #' }
 
 
-convertExpertGuessSSPLivestockProduction <- function(x){
+convertExpertGuessSSPLivestockProduction <- function(x) {
   map <- toolGetMapping(type = "regional", name = "regionmappingMAgPIE.csv")
   y <- toolAggregate(x, map, from = 3, to = 2)
   return(y)

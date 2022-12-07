@@ -21,8 +21,10 @@
 #' calcOutput("LPJmL_new", subtype = "soilc", aggregate = FALSE)
 #' }
 #'
-calcLPJmL_new <- function(version = "LPJmL4_for_MAgPIE_44ac93de", climatetype = "MRI-ESM2-0:ssp370",
-                          subtype = "soilc", subdata = NULL, stage = "harmonized2020") {
+calcLPJmL_new <- function(version = "LPJmL4_for_MAgPIE_44ac93de",   # nolint
+                          climatetype = "MRI-ESM2-0:ssp370",
+                          subtype = "soilc", subdata = NULL,
+                          stage = "harmonized2020") {
 
   # Create settings for LPJmL from version and climatetype argument
   cfg <- toolLPJmLVersion(version = version, climatetype = climatetype)

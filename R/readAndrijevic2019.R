@@ -49,9 +49,9 @@ readAndrijevic2019 <- function(subtype) {
   projData <- toolCountryFill(projData, fill = NA)
 
   # merge historical and projected data into one object
-  histData <- histData[, intersect(getYears(histData), getYears(projData)), , invert = T]
+  histData <- histData[, intersect(getYears(histData), getYears(projData)), , invert = TRUE]
 
-  out <- new.magpie(cells_and_regions = getRegions(histData),
+  out <- new.magpie(cells_and_regions = getItems(histData, 1),
                     years = c(getYears(histData), getYears(projData)),
                     names = getNames(projData),
                     fill = NA)

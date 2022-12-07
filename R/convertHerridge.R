@@ -19,7 +19,7 @@
 #'
 convertHerridge <- function(x) {
 
-  x  <- toolCountryFill(x,fill=0)
+  x  <- toolCountryFill(x, fill = 0)
 
   return(x)
 }

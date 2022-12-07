@@ -1,8 +1,10 @@
 #' @title calcGrowingStockNRF
 #' @description
-#' Calculates the growing stocks from FAO data for naturally regenerating forests i.e. primary forests and secondary forests.
+#' Calculates the growing stocks from FAO data for naturally regenerating
+#' forests i.e. primary forests and secondary forests.
 #'
-#' @return List of magpie objects with results on country level, weight on country level, unit and description.
+#' @return List of magpie objects with results on country level, weight on
+#' country level, unit and description.
 #' @author Abhijeet Mishra
 #' @examples
 #' \dontrun{
@@ -33,6 +35,8 @@ calcGrowingStockNRF <- function() {
     weight = weight,
     min = 0,
     unit = "m3/ha",
-    description = "Calculates Growing stocks in naturally regenerating forests as reported by Forest Resources Assessment Data 2020."
+    description = paste("Calculates Growing stocks in naturally regenerating",
+                        "forests as reported by Forest Resources Assessment",
+                        "Data 2020.")
   ))
 }
