@@ -1,5 +1,5 @@
 convertEDGAR <- function(x,subtype) {
-  
+
   if(subtype=="ch4waste" | subtype=="n2owaste" | subtype=="co2" | subtype=="CO" | subtype=="NOx" | subtype=="VOC" | subtype=="NH3" | subtype=="SO2" | subtype=="PM10" | subtype =="GHG") {
     # split regional data
     # "ANT" -> "SXM", "CUW"
@@ -29,8 +29,8 @@ convertEDGAR <- function(x,subtype) {
     x_split <- toolAggregate(x["SCG",,],m,weight=w)
     # delete SCG from x
     x <- x[c("SCG"),,invert=TRUE]
-    x <- mbind(x,x_split)  
-  }  
+    x <- mbind(x,x_split)
+  }
 
   
   if(subtype=="ch4waste" | subtype=="n2owaste" | subtype=="co2" | subtype=="ch4_history" | subtype=="CO" | subtype=="NOx" | subtype=="VOC" | subtype=="NH3" | subtype=="SO2" | subtype=="PM10") {
@@ -40,7 +40,7 @@ convertEDGAR <- function(x,subtype) {
     x_SEA_AIR[,,"SEA"] <- x["SEA",,"TOTAL"]
     x_SEA_AIR[,,"AIR"] <- x["AIR",,"TOTAL"]
     # delete SEA and AIR from regional dimension
-    # and allocalte to all countries 
+    # and allocalte to all countries
     x <- x[c("SEA","AIR"),,invert=TRUE]
     m <- matrix(c(getRegions(x),rep("GLO",length(getRegions(x)))),length(getRegions(x)))
     w <- new.magpie(getRegions(x),getYears(x),fill=1)      # FIXME use GDP as weight
@@ -52,8 +52,8 @@ convertEDGAR <- function(x,subtype) {
   #  # delete SEA and AIR from regional dimension
   #  x <- x[c("SEA","AIR"),,invert=TRUE]
   }
-  
+
   # fill all missing countries with 0
   x <- toolCountryFill(x,fill=0)
   return(x)
-}  
+}

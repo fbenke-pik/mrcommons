@@ -1,5 +1,5 @@
 #' toolAdjustExperGuesses
-#' @description Function that uses ssp2 as baseline scenario and adjusts ssp1,ssp3,ssp4, and ssp5 based on 
+#' @description Function that uses ssp2 as baseline scenario and adjusts ssp1,ssp3,ssp4, and ssp5 based on
 #' pre-established assumptions about the relative development in the different scenarios.
 #' @param q magpie object with expert guesses loaded
 #'
@@ -35,7 +35,7 @@ toolAdjustExperGuesses <- function(q) {
     for (i in 1:length(levels)) {
       tmp1 <- tmp == levels[i]
       tmp[tmp1] <- i
-      x[, , j] <- tmp 
+      x[, , j] <- tmp
     }
   }
 
@@ -66,7 +66,7 @@ toolAdjustExperGuesses <- function(q) {
     z <- w
     z[, , ] <- NA
     for (j in getItems(x, dim = 3.1)) {                      # checking which values in ssp5 are already at the maximum level for each sys.
-      z[, , j] <- collapseNames(x[, , list(data = j, scen = "ssp5")] < max(indexes[[j]])) 
+      z[, , j] <- collapseNames(x[, , list(data = j, scen = "ssp5")] < max(indexes[[j]]))
     }
     t <- w * z
     xtmp <- x[, , "ssp5"]
@@ -93,10 +93,10 @@ toolAdjustExperGuesses <- function(q) {
 
 # Making adjustments on SSP1:
 #  -- Assumption: Same to ssp2 for more Developed and same ssp5 for Developing (middle and lower range).
-  x[, , "ssp1"] <- x[, , "ssp2"] * developed[, , "ssp1"] + x[, , "ssp5"] * middle[, , "ssp1"] + x[, , "ssp5"] * lower[, , "ssp1"]         
+  x[, , "ssp1"] <- x[, , "ssp2"] * developed[, , "ssp1"] + x[, , "ssp5"] * middle[, , "ssp1"] + x[, , "ssp5"] * lower[, , "ssp1"]
 
 # Making adjustments on SSP4:
-#  -- Assumption:  Same to ssp5 for more Developed, same ssp2 for middle and ssp3 for lower development.          
+#  -- Assumption:  Same to ssp5 for more Developed, same ssp2 for middle and ssp3 for lower development.
   x[, , "ssp4"] <- x[, , "ssp5"] * developed[, , "ssp4"] + x[, , "ssp2"] * middle[, , "ssp4"] + x[, , "ssp3"] * lower[, , "ssp4"]
 
   for (i in getItems(x, dim = 3.1)) {

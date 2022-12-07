@@ -6,18 +6,18 @@
 #' @seealso
 #' [calcAtmosphericDeposition()]
 #' @examples
-#' 
-#' \dontrun{ 
+#'
+#' \dontrun{
 #' calcOutput("ACCMIP")
 #' }
-#' 
+#'
 
 calcACCMIP<-function(glo_incl_oceans=FALSE){
-  
+
   if(glo_incl_oceans=="TRUE"){
     prefix="glo_"
   } else {prefix=""}
-  
+
   ACCMIP<-mbind(
     add_dimension(
       mbind(
@@ -71,7 +71,7 @@ calcACCMIP<-function(glo_incl_oceans=FALSE){
         )
       ),dim = 3.1,add = "scenario",nm="rcp85")
   )
-  
+
   return(list(
     x=ACCMIP,
     weight=NULL,

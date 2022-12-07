@@ -3,11 +3,11 @@
 #'
 #' @param subtype type in gas for receiving the newest data. type in specific filename for old version 4.31 data
 #' @return List of magpie objects with results on cellular level, weight, unit and description.
-#' @author Benjamin Leon Bodirsky, 
+#' @author Benjamin Leon Bodirsky,
 #' @importFrom utils download.file tail unzip bibentry
 
 downloadEDGAR6 <- function(subtype = "n2o") {
-  
+
   # Define subtype-specific elements of the meta data. Elements that are common to all subtypes are added further down.
   settings <- list(     n2o = list(title = "EDGAR 6 N2O data inventories by country and emission source",
                                    url = "https://cidportal.jrc.ec.europa.eu/ftp/jrc-opendata/EDGAR/datasets/v60_GHG/N2O/v60_GHG_N2O_1970_2018.zip",
@@ -65,11 +65,11 @@ downloadEDGAR6 <- function(subtype = "n2o") {
                                    version= "5.0")
   )
   meta <- toolSubtypeSelect(subtype,settings)
-  
+
   download.file(meta$url, destfile = paste0(subtype,".zip"))
   unzip(paste0(subtype,".zip"))
   unlink(paste0(subtype,".zip"))
-  
+
   if (meta$version=="6.0"){
     meta$reference=bibentry("TechReport",
                             title="EDGAR v6.0 Greenhouse Gas Emissions",
@@ -86,7 +86,7 @@ downloadEDGAR6 <- function(subtype = "n2o") {
                             institution="JRC",
                             url="https://edgar.jrc.ec.europa.eu/index.php/dataset_ghg60",
                             doi="http://data.europa.eu/89h/97a67d67-c62e-4826-b873-9d972c4f670b")
-    
+
   } else if (meta$version=="5.0") {
     meta$reference=bibentry("TechReport",
                             title="Fossil CO2 and GHG emissions of all world countries: 2019 report.",
@@ -104,7 +104,7 @@ downloadEDGAR6 <- function(subtype = "n2o") {
                             url="http://publications.europa.eu/publication/manifestation_identifier/PUB_KJNA29849ENN",
                             doi="10.2760/687800")
   }
-  
+
   # Compose meta data by adding elements that are the same for all subtypes.
   return(list(url           = meta$url,
               doi           = meta$doi,

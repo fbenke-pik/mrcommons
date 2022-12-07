@@ -15,9 +15,9 @@ correctLPJml_rev21<-function(x){
     return(x)
   }
   x<-toberemoved(x)
-  
+
   #rename old "AFR.1"-style in new "GLO.1"-style
   getCells(x) <- paste0("GLO",substring(getCells(x),4))
   x<-toolCell2isoCell(x)
   return(x)
-}  
+}

@@ -8,11 +8,11 @@
 #' @seealso
 #' [readProductAttributes()]
 #' @examples
-#' 
-#' \dontrun{ 
+#'
+#' \dontrun{
 #' calcOutput("Attributes")
 #' }
-#' 
+#'
 
 
 

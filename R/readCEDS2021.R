@@ -1,11 +1,11 @@
 #' @title readCEDS2021
-#' 
+#'
 #' @description reads in emission data from the CEDS database
 #' @return MAgPIE object
 #' @author Benjamin Leon Bodirsky, David Klein
 
 readCEDS2021<- function() {
-  
+
   files <- c(BC    = "BC_CEDS_emissions_by_sector_country_2021_04_21.csv",
              CO    = "CO_CEDS_emissions_by_sector_country_2021_04_21.csv",
              CH4   = "CH4_CEDS_emissions_by_sector_country_2021_04_21.csv",
@@ -20,7 +20,7 @@ readCEDS2021<- function() {
   out=NULL
   allyears=paste0("y",1750:2019)
   for (file_x in files){
-  
+
     emi  <- read.csv(file_x)
     dimnames(emi)[[2]] <- gsub("X","y",dimnames(emi)[[2]])
     y <- as.magpie(emi,spatial=2,datacol=5)
@@ -31,7 +31,7 @@ readCEDS2021<- function() {
     missing_years=setdiff(allyears,getYears(y))
     y=time_interpolate(y,allyears)
     y[,missing_years,]=NA
-    
+
     out<-mbind(out,y)
   }
   out=clean_magpie(out)

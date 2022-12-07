@@ -66,7 +66,7 @@ calcLivestockProductivity <- function(future = TRUE) {
 
   yield <- rename_dimnames(yield, dim = 3, query = mapping, from = "groups", to = "sys")
   weight <- rename_dimnames(weight, dim = 3, query = mapping, from = "groups", to = "sys")
-  
+
   #preparing output for magpie time steps "past"
   past <- findset("past")
   yieldPast <- yield[,past,]
@@ -81,28 +81,28 @@ calcLivestockProductivity <- function(future = TRUE) {
   }
   else if (future == TRUE) {
     histYield <- clean_magpie(yield, what = "sets")
-    
+
     #extrapolate the trends to 2020 to reduce the number of time steps filled by the expertGuess-approach below
-    #select two 5-year averages for the 2 time steps to be used for extrapolation 
+    #select two 5-year averages for the 2 time steps to be used for extrapolation
     average <- 5
     dt <- floor(average/2)
     year1 <-tail(getYears(histYield), n = average + dt + 1)[1]
     year2 <-tail(getYears(histYield), n = dt + 1)[1]
     exyears <- c(year1, year2)
     exyears <- as.numeric(gsub('y', '', exyears))
-    
+
     extra2020 <- time_interpolate(dataset = mbind(toolTimeAverage(histYield[, seq(exyears[1] - dt, exyears[1] + dt), ], average),
-                                            toolTimeAverage(histYield[, seq(exyears[2] - dt, exyears[2] + dt), ], average)), 
+                                            toolTimeAverage(histYield[, seq(exyears[2] - dt, exyears[2] + dt), ], average)),
                             interpolated_year = 2020,
                             integrate_interpolated_years = FALSE,
                             extrapolation_type = "linear")
-    
+
     for(i in getNames(histYield)){
       extra2020[,,i] <- toolConditionalReplace(extra2020[,,i], "<0", min(histYield[,,i]))
     }
-    
+
     histYield <- mbind(histYield, extra2020)
-    
+
     #selecting data for years included in magpie time steps "time"
     mag_years <- findset("time")
     histYield <- histYield[,intersect(getYears(histYield),mag_years),]
@@ -110,7 +110,7 @@ calcLivestockProductivity <- function(future = TRUE) {
 
     outputConstant <- toolHoldConstantBeyondEnd(histYield)
     weight <- toolHoldConstantBeyondEnd(weight)
-    
+
 
     expertGuess <- function(histYield) {
       # Expert guesses are a number-coded matrix to indicate magnitude of future yield gain
@@ -193,7 +193,7 @@ calcLivestockProductivity <- function(future = TRUE) {
                                        integrate_interpolated_years = T, extrapolation_type = "linear")
       return(productivity)
     }
-    
+
     output <- expertGuess(histYield = histYield)
     output <- add_columns(output, addnm = "constant", dim = 3.2)
     output[, , "constant"] <- outputConstant

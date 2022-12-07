@@ -99,7 +99,7 @@ file <- "Trade_DetailedTradeMatrix_E_All_Data_(Normalized).csv"
 
   #some small islands correspond to the same ISO3code, just remove them for now
   fao <- filter(fao, !.data$ReporterCountries %in% c("Johnston Island", "Midway Island", "Canton and Enderbury Islands",
-                                                    "Wake Island"), 
+                                                    "Wake Island"),
                        !.data$PartnerCountries %in% c("Johnston Island", "Midway Island", "Canton and Enderbury Islands",
                                                     "Wake Island"))
 

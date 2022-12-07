@@ -1,8 +1,8 @@
 #' @title calcFAOBilateralTrade
 #' @description Calculates bilateral trade values based on FAO trade matrix
-#' @param output "value", "qty", or "price" 
+#' @param output "value", "qty", or "price"
 #' @param products "kcr", "kli", or "kothers"
-#' @param prod_agg binary to keep FAO product level or magpie 
+#' @param prod_agg binary to keep FAO product level or magpie
 #' @param five_year only 5 year steps due to memory load
 #' @return List of magpie objects with results on bilateral country level, weight on bilateral country level, unit and description.
 #' @author David M Chen
@@ -23,14 +23,14 @@ im <- collapseNames(readSource("FAO_TradeMatrix", subtype = paste("import", outp
 im <- im[,c(min(getYears(im, as.integer = TRUE)):1994), inv = T] #subset years for lighter load on mem
 ex <- collapseNames(readSource("FAO_TradeMatrix", subtype = paste("export", output, products, sep = "_"), convert = TRUE))
 ex <- ex[,c(min(getYears(ex, as.integer = TRUE)):1994), inv = T]
-  
+
   if(five_year){
    im <- im[,seq(1995,2020,5),]
    ex <- ex[,seq(1995,2020,5),]
   }
 
  .harmBilat <- function(im, ex, value){
-  
+
   if(value){
   #imports generally reported on cif basis, use generic 12% (FAOSTAT) for now.
   fobCvn <- 1.12
@@ -51,7 +51,7 @@ ex <- ex[,c(min(getYears(ex, as.integer = TRUE)):1994), inv = T]
   gc()
   imTot <- dimSums(im, dim = 1.2)
   gc()
-  ## use reliability as Accuracy Level accLevel within =< 0.20 (Gelhar 1996) 
+  ## use reliability as Accuracy Level accLevel within =< 0.20 (Gelhar 1996)
   # get all trades within 0.2 accuracy (0 most accurate)
   imAcc <- im
   imAcc[which(accLevel > 0.2)] <- 0
@@ -75,10 +75,10 @@ ex <- ex[,c(min(getYears(ex, as.integer = TRUE)):1994), inv = T]
   # make difference in reliability for all country combinations
   getItems(RIX, dim = 1) <- paste0(getItems(RIX, dim=1), "1")
   imR <- exR <- RIM - RIX
-  getItems(imR, dim = 1) <- gsub("1", "", getItems(imR, dim = 1)) 
-  getItems(imR, dim = 1, raw = TRUE) <- gsub("p", "\\.", getItems(imR, dim = 1)) 
-  getItems(exR, dim = 1) <- gsub("1", "", getItems(exR, dim = 1)) 
-  getItems(exR, dim = 1, raw = TRUE) <- gsub("p", "\\.", getItems(exR, dim = 1)) 
+  getItems(imR, dim = 1) <- gsub("1", "", getItems(imR, dim = 1))
+  getItems(imR, dim = 1, raw = TRUE) <- gsub("p", "\\.", getItems(imR, dim = 1))
+  getItems(exR, dim = 1) <- gsub("1", "", getItems(exR, dim = 1))
+  getItems(exR, dim = 1, raw = TRUE) <- gsub("p", "\\.", getItems(exR, dim = 1))
   gc()
   exR[which(exR >= 0)] <- 0
   exR[which(exR < 0)] <- 1
@@ -124,7 +124,7 @@ unit <- "US$05/tDM"
  mapping <- toolGetMapping("newFAOitems_online_DRAFT.csv", type = "sectoral")
  out <- toolAggregate(out, rel = mapping, from = "new_FAOoriginalItem_fromWebsite",
                            to = "k" , partrel = T, dim = 3.1)
-    
+
     if (output == "qty") {
     attr <- calcOutput("Attributes", aggregate = FALSE)
     out <- out / collapseNames(attr[,,"wm"][,,getNames(out)])
@@ -139,7 +139,7 @@ unit <- "US$05/tDM"
  getSets(out)[c(1,2)] <- c("im", "ex")
  out[is.na(out)] <- 0
  out[is.infinite(out)] <- 0
- 
+
   return(list(x = out,
               weight = weight,
               unit = unit,

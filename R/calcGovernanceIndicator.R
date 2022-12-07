@@ -24,7 +24,7 @@ calcGovernanceIndicator <- function() {
   pop <- calcOutput("Population",aggregate=FALSE)[,2010,1]
   getYears(pop) <- NULL
   getNames(pop) <- NULL
-  
+
   return(list(x            = out,
               weight       = pop,
               unit         = "index",

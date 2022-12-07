@@ -9,8 +9,8 @@
 #' @seealso
 #' [calcNitrogenBudgetCropland()]
 #' @examples
-#' 
-#' \dontrun{ 
+#'
+#' \dontrun{
 #' calcOutput("NitrogenWithdrawalByCrop")
 #' }
 #' @importFrom magpiesets findset
@@ -18,20 +18,20 @@
 
 
 calcNitrogenWithdrawalByCrop<-function(indicator="total",cellular=FALSE,irrigation=FALSE){
-  
+
   past <- findset("past")
-  
+
   if(irrigation%in%c("rainfed","irrigated")){  #again, for size reasons
     irrigation2=irrigation
     irrigation=TRUE
   } else {irrigation2=FALSE}
-  
+
   harvest<-collapseNames(calcOutput("Production",products="kcr",cellular=cellular,attributes="nr",irrigation=irrigation,aggregate = FALSE)[,past,])
   ag<- collapseNames(calcOutput("ResBiomass",cellular=cellular,plantparts="ag",irrigation=irrigation,attributes="nr",aggregate=FALSE)[,past,])
   bg<- collapseNames(calcOutput("ResBiomass",cellular=cellular,plantparts="bg",irrigation=irrigation,attributes="nr",aggregate=FALSE)[,past,])
   seed<-collapseNames(calcOutput("Seed",cellular=cellular,products="kcr",attributes="nr",irrigation=irrigation,aggregate=FALSE)[,past,])
   fixation<-calcOutput("NitrogenFixationPast",cellular=cellular,irrigation=irrigation,fixation_types="fixation_crops",aggregate = FALSE)
-  
+
   if(irrigation2!="FALSE"){ #again, for size reasons
     harvest<-harvest[,,irrigation2]
     ag<-ag[,,irrigation2]
@@ -39,7 +39,7 @@ calcNitrogenWithdrawalByCrop<-function(indicator="total",cellular=FALSE,irrigati
     seed<-seed[,,irrigation2]
     fixation<-fixation[,,irrigation2]
   }
-  
+
   withdrawal=mbind(
     add_dimension(harvest,nm = "harvest",dim = 3.1),
     add_dimension(ag,nm = "ag",dim = 3.1),
@@ -47,7 +47,7 @@ calcNitrogenWithdrawalByCrop<-function(indicator="total",cellular=FALSE,irrigati
     add_dimension(-fixation,nm = "fixation_crops",dim = 3.1),
     add_dimension(-seed,nm = "seed",dim = 3.1)
   )
- 
+
   if (indicator=="by_physical_area"){
     area<-collapseNames(calcOutput("Croparea",aggregate = FALSE,physical=TRUE,cellular=cellular,irrigation=irrigation,sectoral="kcr")[,past,])
     if(irrigation2!="FALSE"){ #again, for size reasons
@@ -79,7 +79,7 @@ calcNitrogenWithdrawalByCrop<-function(indicator="total",cellular=FALSE,irrigati
     out[is.nan(out)]<-0
     unit="Mt Nr"
   } else {stop("unknown indicator")}
-  
+
   return(list(x=out,
               weight=weight,
               unit=unit,

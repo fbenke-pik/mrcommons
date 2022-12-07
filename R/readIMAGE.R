@@ -6,5 +6,5 @@ readIMAGE <- function() {
   rid <- x["Region"]=="World"
   x <- x[!(rid),]
   x <- as.magpie(x, spatial=1)
-  return(x) 
+  return(x)
 }

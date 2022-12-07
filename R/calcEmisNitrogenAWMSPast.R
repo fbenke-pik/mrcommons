@@ -4,11 +4,11 @@
 #' @return List of magpie object with results on country level, weight on country level, unit and description.
 #' @author Benjamin Leon Bodirsky
 #' @examples
-#' 
-#' \dontrun{ 
+#'
+#' \dontrun{
 #' calcOutput("EmisNitrogenAWMSPast")
 #' }
-#' 
+#'
 
 
 calcEmisNitrogenAWMSPast<-function(){

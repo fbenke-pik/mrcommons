@@ -7,14 +7,14 @@
 #' [calcAtmosphericDeposition()],
 #' [calcNitrogenBudgetCropland()]
 #' @examples
-#' 
-#' \dontrun{ 
+#'
+#' \dontrun{
 #' calcOutput("EmisNitrogenOceans")
 #' }
-#' 
+#'
 
 calcEmisNitrogenOceans<-function(method="ACCMIP"){
-  
+
   if (method=="ACCMIP"){
     emi<-collapseNames(calcOutput("AtmosphericDeposition",datasource="ACCMIP",glo_incl_oceans=FALSE,cellular=FALSE,emission=TRUE,aggregate = FALSE))
     emi_glo<-collapseNames(calcOutput("AtmosphericDeposition",datasource="ACCMIP",glo_incl_oceans=TRUE,cellular=FALSE,emission=TRUE,aggregate = FALSE))

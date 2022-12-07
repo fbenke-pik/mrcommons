@@ -1,17 +1,17 @@
 #' convertVanDrecht2009
-#' 
+#'
 #' Reads a dataset containing values for sewage
-#' 
+#'
 #' @param x MAgPIE object containing incomplete country-region resolution
 #' @return A MAgPIE object containing sewage quantities and losses
 #' @author Benjamin Leon Bodirksy
 #' @examples
-#' 
-#' 
+#'
+#'
 #'   \dontrun{
 #'     x <- readSource("VanDerWerf2010")
 #'   }
-#' 
+#'
 #' @importFrom reshape2 melt
 convertVanDrecht2009 <- function(x){
   mapping <- toolGetMapping(type = "regional", name = "regionmappingVanDrecht.csv")

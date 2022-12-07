@@ -7,8 +7,8 @@
 #' @return List of magpie object with results on country level, weight on country level, unit and description.
 #' @author Benjamin Leon Bodirsky
 #' @examples
-#' 
-#' \dontrun{ 
+#'
+#' \dontrun{
 #' calcOutput("EF3confinement")
 #' }
 #' @importFrom magclass getYears<-
@@ -59,23 +59,23 @@ calcEF3confinement<-function(products="magpie",selection="n_pollutants_direct"){
     tmp[,,]<-1
     excretion<-tmp*excretion
   }
-  
+
   getYears(distribution)<-NULL
   getYears(excretion)<-NULL
-  
+
   if(!is.null(selection)){
     if(selection=="n_pollutants_direct"){
       selection<-findset("n_pollutants_direct")
     }
     distribution=collapseNames(distribution[,,selection])
     excretion=collapseNames(excretion[,,selection])
-  } 
-  
+  }
+
   out<-toolNAreplace(x = distribution,weight=excretion,replaceby = 0)
-  
+
   return(list(x=out$x,
               weight=out$weight,
               unit="share",
               description="share of nitrogen in managed manure emitted in various forms or recycled")
-  ) 
+  )
 }

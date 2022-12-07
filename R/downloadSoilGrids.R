@@ -11,7 +11,7 @@
 #'
 #' @examples
 #' \dontrun{ downloadSource("SoilGrids",subtype="carbon0_30") }
-#' 
+#'
 #' @importFrom utils download.file tail
 #' @importFrom madrat toolSubtypeSelect
 

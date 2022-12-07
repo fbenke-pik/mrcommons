@@ -1,19 +1,19 @@
 #' @title calcPlantEstablishCalib
-#' @description 
+#' @description
 #' Calculates the calibration factors for plantation establishment globally
 #'
 #' @return List of magpie objects with results on country level, weight on country level, unit and description.
 #' @author Abhijeet Mishra
 #' @examples
-#' 
-#' \dontrun{ 
+#'
+#' \dontrun{
 #' calcOutput("PlantEstablishCalib",aggregate=TRUE)
 #' }
 #' @importFrom madrat toolGetMapping
 #' @export
 
 calcPlantEstablishCalib <- function(){
-  
+
   ## Call mapping file
   mapping <- toolGetMapping(type = "regional", name = "h12.csv")
   mapping$value <- 1
@@ -32,11 +32,11 @@ calcPlantEstablishCalib <- function(){
 
   weight <- x <- setNames(as.magpie(mapping[,c(-1,-3)],spatial = "CountryCode",temporal = NULL),NULL)
   weight[weight >= 0] <- 1
-  
+
   return(list(x = x,
               weight = weight,
               min = 0,
               unit = "1",
               description = "Calibration factor for plantation establishment decisions"))
-  
+
 }

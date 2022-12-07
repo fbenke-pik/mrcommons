@@ -1,6 +1,6 @@
 #' @title readLassaletta2014
-#' @description reads nitrogen budgets for a country dataset from 
-#' Lassaletta, L., G. Billen, B. Grizzetti, J. Angalde, and J. Garnier. 2014. 
+#' @description reads nitrogen budgets for a country dataset from
+#' Lassaletta, L., G. Billen, B. Grizzetti, J. Angalde, and J. Garnier. 2014.
 #' 50 Year Trends in Nitrogen Use Efficiency of World Cropping Systems: The Relationship between Yield and Nitrogen Input to Cropland.
 #' Environmental Research Letters.
 #'
@@ -11,8 +11,8 @@
 #' [convertLassaletta2014()],
 #' [readSource()]
 #' @examples
-#' 
-#' \dontrun{ 
+#'
+#' \dontrun{
 #' readSource("Lassaletta2014",subtype="budget",convert=FALSE)
 #' }
 #' @importFrom readxl read_excel
@@ -31,12 +31,12 @@ readLassaletta2014<-function(subtype="budget"){
       indicator <- paste(indicator[1:(length(indicator)-1)],collapse="_")
       countries <- data[,1]
       countries <- toolCountry2isocode(countries,mapping=c(
-          "Belgium-Luxemburg"="BEL",                 
+          "Belgium-Luxemburg"="BEL",
           "Bolivia (Plurinational State of)"  ="BOL",
-         # "Cote d'Ivoire" = "CIV",                    
-          "Ethiopia PDR" ="ETH",                   
+         # "Cote d'Ivoire" = "CIV",
+          "Ethiopia PDR" ="ETH",
           "FSU"   ="SUN",
-          "Sudan (former)"="SDN",                    
+          "Sudan (former)"="SDN",
           "Venezuela (Bolivarian Republic of)"="VEN",
           "Yugoslav SFR" ="YUG"
         ))
@@ -58,12 +58,12 @@ readLassaletta2014<-function(subtype="budget"){
     a <- read.csv(file="erl502906suppdata1annex.csv",sep = ";",header = 1,row.names = 1)
     dimnames(a)[[2]] <- gsub(dimnames(a)[[2]],pattern = "X",replacement = "y")
     dimnames(a)[[1]] <- toolCountry2isocode(dimnames(a)[[1]],mapping=c(
-      "Belgium-Luxemburg"="BEL",                 
+      "Belgium-Luxemburg"="BEL",
       "Bolivia (Plurinational State of)"  ="BOL",
-      # "Cote d'Ivoire" = "CIV",                    
-      "Ethiopia PDR" ="ETH",                   
+      # "Cote d'Ivoire" = "CIV",
+      "Ethiopia PDR" ="ETH",
       "FSU"   ="SUN",
-      "Sudan (former)"="XFS",                    
+      "Sudan (former)"="XFS",
       "Venezuela (Bolivarian Republic of)"="VEN",
       "Yugoslav SFR" ="YUG",
       "dprepublic of korea"="PRK"

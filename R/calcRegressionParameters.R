@@ -5,11 +5,11 @@
 #' @return List of magpie objects with results on country level, weight on country level, unit and description.
 #' @author Benjamin Leon Bodirsky
 #' @examples
-#' 
-#' \dontrun{ 
+#'
+#' \dontrun{
 #' calcOutput("RegressionParameters")
 #' }
-#' 
+#'
 
 calcRegressionParameters<-function(regression="bmi_shr")
 {
@@ -21,27 +21,26 @@ calcRegressionParameters<-function(regression="bmi_shr")
     description = "Equation parameters for BMI shares estimates using regression analysis. See Bodirsky et al 2019."
   } else if(regression=="intake_regression") {
     x <- readSource("Bodirsky2018",convert = FALSE,subtype="intake_regression")
-    description = "Equation parameters for intake using regression analysis."    
+    description = "Equation parameters for intake using regression analysis."
   } else if(regression=="bodyheight_regression") {
     x <- readSource("Bodirsky2018",convert = FALSE,subtype="bodyheight_regression")
-    description = "Equations parameters for bodyheight regression. See Bodirsky et al 2019."    
+    description = "Equations parameters for bodyheight regression. See Bodirsky et al 2019."
   } else if (regression=="Schofield") {
-    x <- readSource("Schofield",convert=FALSE)  
+    x <- readSource("Schofield",convert=FALSE)
     description = "Equation parameters for intake estimates using regression analysis"
   } else if (regression=="FAO_WHO_UNU1985") {
     x <- readSource("FAO_WHO_UNU1985",convert = FALSE)
     description = "Equation parameters for intake estimates using regression analysis"
   } else if (regression=="Froehle") {
     x <- readSource("Froehle",convert = FALSE)
-    description = "Equation parameters for intake estimates using regression analysis"    
+    description = "Equation parameters for intake estimates using regression analysis"
 
   } else {stop("unknown type")}
-  
+
   return(list(x = x,
               weight =  NULL,
               unit = "dimensionless",
               description = description,
               isocountries = FALSE)
   )
-} 
-
+}

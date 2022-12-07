@@ -1,8 +1,8 @@
 #' Convert FeedModel data
-#' 
+#'
 #' Convert production system distribution and feed basket data to ISO country level.
-#' 
-#' 
+#'
+#'
 #' @param x MAgPIE object containing production system distribution and feed basket data.
 #' @param subtype Available subtypes: "ProdSysRatio", "FeedBaskets" and "FeedBasketsDetailed"
 #' @return Production system distribution and feed basket data as MAgPIE object on ISO country level
@@ -10,17 +10,17 @@
 #' @importFrom utils tail
 
 convertFeedModel <- function(x,subtype="FeedBaskets") {
-  
+
   timesteps<-getYears(x)
   year <- tail(timesteps,1)
-  
+
   createNAmatrix <- function(x) {
     tmp     <- x
     tmp[!x] <- 0
     tmp[x]  <- NA
     return(tmp)
   }
-  
+
   # identify missing entries and fill with country mean or global mean
   fillmissing <- function(x, datadim=3.2, glo=TRUE) {
     if(glo) {
@@ -37,7 +37,7 @@ convertFeedModel <- function(x,subtype="FeedBaskets") {
   if(subtype=="ProdSysRatio"){
     x <- fillmissing(x, datadim=3, glo=FALSE)
     x <- fillmissing(x, datadim=3, glo=TRUE)
-    
+
     #some cases are not handled by the above executed automated filling of missing values
     #these are tackled by following replacement rules:
     missing_all <- where(x[,tail(timesteps,3),"sys_beef.livst_rum"]<0.08)$true$regions
@@ -46,19 +46,18 @@ convertFeedModel <- function(x,subtype="FeedBaskets") {
       missing_t <- where(x[,t,"sys_beef.livst_rum"]<0.08)$true$regions
       x[missing_t,t,"sys_beef.livst_rum"] <- setYears(replacement[missing_t,,],t)
     }
-    
+
     #re-establishment of the underlying properties of the data set:
     x[,,"sys_dairy.livst_milk"] <- 1
     x[,,"sys_dairy.livst_rum"] <- 1 - x[,,"sys_beef.livst_rum"]
     x[,,"sys_pig.livst_pig"] <- 1
     x[,,"sys_hen.livst_egg"] <- 1
     x[,,"sys_hen.livst_chick"] <- 1 - x[,,"sys_chicken.livst_chick"]
-    
+
   }else{
     x <- fillmissing(x, datadim=3.2, glo=FALSE)
     x <- fillmissing(x, datadim=3.2, glo=TRUE)
   }
-  
+
   return(x)
 }
-

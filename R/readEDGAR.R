@@ -1,9 +1,9 @@
 #' @importFrom readxl read_excel
 
 readEDGAR<- function(subtype) {
-  
+
   files <- c(ch4waste = "v4.2_CH4_2005.xlsx",  
-             n2owaste = "v4.2_N2O_2005.xlsx", 
+             n2owaste = "v4.2_N2O_2005.xlsx",
              co2 = "v4.2_CO2_excl_scc_2005.xlsx",
              ch4_history = "v4.2_CH4_tot_1970_2008.xlsx",
              CO = "v4.2_EM_CO_2005.xlsx",
@@ -27,18 +27,18 @@ readEDGAR<- function(subtype) {
             SO2 = 10,
             PM10 = 10,
             HFC = 9,
-            GHG = 8)   
-  
+            GHG = 8)
+
   file <- toolSubtypeSelect(subtype,files)
-  
+
   # add read function that copes with different data input types
   ed <- as.data.frame(read_excel(file,  skip=skip[subtype]))
   ed <- ed[!is.na(ed[[1]]),]
-  
+
   if(subtype=="co2") {
     names(ed)[names(ed)=="TOTAL (IPCC)"]  <- "TOTAL"
   }
-  
+
   if(subtype=="ch4waste" | subtype=="n2owaste" | subtype=="co2" | subtype=="CO" | subtype=="NOx" | subtype=="VOC" | subtype=="NH3" | subtype=="SO2" | subtype=="PM10") {
     ed <- ed[-nrow(ed),]
     ed$"World Region" <- NULL
@@ -60,7 +60,7 @@ readEDGAR<- function(subtype) {
     ed$`Country name` <- NULL
     x <- as.magpie(ed,spatial=1)
     getNames(x)  <- "GHG total in kton (Gg) CO2eq /yr"
-  } 
+  }
   getNames(x) <- sub(" *$","",getNames(x))
   return(x)
 }

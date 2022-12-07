@@ -65,4 +65,3 @@ readICP2017 <- function(subtype = "per_cap_expMER") {
 
     return(x[,,out])
   }
-

@@ -1,6 +1,6 @@
 #' @title convertLassaletta2014
 #' @description converts the dataset of
-#' Lassaletta, L., G. Billen, B. Grizzetti, J. Angalde, and J. Garnier. 2014. 
+#' Lassaletta, L., G. Billen, B. Grizzetti, J. Angalde, and J. Garnier. 2014.
 #' 50 Year Trends in Nitrogen Use Efficiency of World Cropping Systems: The Relationship between Yield and Nitrogen Input to Cropland.
 #' Environmental Research Letters.
 #' into a dataset including all countries. Replacing Soviet Union by Russia and Yugoslavia by Serbia without detailed disaggregation.
@@ -12,8 +12,8 @@
 #' [readLassaletta2014()],
 #' [readSource()]
 #' @examples
-#' 
-#' \dontrun{ 
+#'
+#' \dontrun{
 #' readSource("Lassaletta2014",convert=TRUE)
 #' }
 
@@ -36,15 +36,15 @@ convertLassaletta2014<-function(x,subtype){
     x2 <- x[c("XET", "XFS", "CSK", "SUN", "YUG"), , , invert = TRUE]
 
     x2<-toolCountryFill(x2,fill = 0, verbosity = 2)
-    mapping <- read.csv2(system.file("extdata", "ISOhistorical.csv", 
+    mapping <- read.csv2(system.file("extdata", "ISOhistorical.csv",
                                      package = "madrat"), stringsAsFactors = F)
-    
+
     x2[c("SRB","MNE","SVN","HRV","MKD","BIH"),,]<-setCells(x["YUG",,],"GLO")
     x2[mapping$toISO[which(mapping$fromISO =="SUN")],,]<-setCells(x["SUN",,],"GLO")
     x2[mapping$toISO[which(mapping$fromISO =="CSK")],,]<-setCells(x["CSK",,],"GLO")
-    
+
     x<-x2
   }
-  
+
   return(x)
 }

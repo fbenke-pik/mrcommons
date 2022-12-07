@@ -25,7 +25,7 @@ calcAgProductionValue <- function(datasource="FAO") {
     aggregation <- toolGetMapping("FAOitems.csv", type = "sectoral", where="mappingfolder")
 
     data[is.na(data)] <- 0
-    
+
     # remove data that contains the aggregate categories
     data <- data[,,-grep("Total", getNames(data), fixed=TRUE)]
     # remove live weight data

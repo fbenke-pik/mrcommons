@@ -1,17 +1,17 @@
 #' Read IMPACT3.2.2World_Price
-#' 
+#'
 #' Read-in world prices data csv file as magclass object
-#' 
-#' 
+#'
+#'
 #' @return magpie object of the world prices from the IMPACT model for different SSP scenarios
 #' @author Mishko Stevanovic
 #' @seealso [readSource()]
 #' @examples
-#' 
+#'
 #' \dontrun{ a <- readSource(type="IMPACT3.2.2World_Price")
 #' }
-#' 
-#' @importFrom readxl read_excel 
+#'
+#' @importFrom readxl read_excel
 #' @importFrom magclass as.magpie
 
 readIMPACT3.2.2World_Price <- function(){
@@ -21,4 +21,3 @@ readIMPACT3.2.2World_Price <- function(){
   data <- as.magpie(data)
   return(data)
 }
- 

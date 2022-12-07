@@ -13,18 +13,18 @@
 #' }
 #' @author Stephen Wirth, Jan Philipp Dietrich
 #' @examples
-#' 
+#'
 #'   \dontrun{
 #'     x <- readSource("Herridge", "ndfa")
 #'     x <-  readSource("Herridge", "freeliving", convert=F)
 #'   }
-#' 
+#'
 readHerridge <- function(subtype=NULL){
 
   #file to read
   files <- c(ndfa="ndfa.csv",
              freeliving ="freeliving.csv")
-  
+
   file <- toolSubtypeSelect(subtype,files)
   #read file
   if (subtype=="ndfa"){
@@ -38,5 +38,5 @@ readHerridge <- function(subtype=NULL){
   getYears(d) <- "y2005"
   getSets(d)  <- c("region", "year", ifelse(subtype=="ndfa","groups","data"))
   return(d)
-   
+
 }

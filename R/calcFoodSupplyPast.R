@@ -11,11 +11,11 @@
 #' @seealso
 #' [calcFAOharmonized()]
 #' @examples
-#' 
-#' \dontrun{ 
+#'
+#' \dontrun{
 #' calcOutput("FoodSupplyPast")
 #' }
-#' 
+#'
 #' @importFrom magclass getSets
 
 calcFoodSupplyPast<-function(per_capita=TRUE, products=NULL, product_aggr=FALSE, populationweight="PopulationPast",attributes=c("kcal","protein","wm")){
@@ -23,14 +23,14 @@ calcFoodSupplyPast<-function(per_capita=TRUE, products=NULL, product_aggr=FALSE,
   kcal<-calcOutput("FAOmassbalance",aggregate = FALSE)
   kcal<-kcal[,,"households"][,,kfo][,,c("ge","nr","wm")]
   kcal<-collapseNames(kcal)
-  
+
   #translate back to calories and proteins
   kcal[,,"ge"]=kcal[,,"ge"]/4.184
   kcal[,,"nr"]=kcal[,,"nr"]*6.25
   #make sure order is correct
   kcal<-kcal[,,c("ge","nr","wm")]
   getNames(kcal,dim=2) <- c("kcal","protein","wm")
-  
+
   if(!is.null(products)){
     products<-findset(products)
     kall <- findset("kall")
@@ -52,7 +52,7 @@ calcFoodSupplyPast<-function(per_capita=TRUE, products=NULL, product_aggr=FALSE,
     vegfruit<-add_dimension(dimSums(kcal[,,"others"],dim=3.1),dim = 3.1,add = "products",nm = "vegfruit")
     kcal<-mbind(staples,animals,vegfruit)
   } else if (product_aggr != FALSE) {stop("unknown product_aggr")}
-   
+
   if(per_capita==TRUE){
     if (populationweight=="PopulationPast"){
       weight=collapseNames(calcOutput("PopulationPast",aggregate = FALSE))
@@ -63,12 +63,12 @@ calcFoodSupplyPast<-function(per_capita=TRUE, products=NULL, product_aggr=FALSE,
     out=kcal/weight/365*1000000
 
     if(any(is.nan(out))){out[is.nan(out)]=0}
-    if(any(out==Inf)){out[out==Inf]=0}    
-        
+    if(any(out==Inf)){out[out==Inf]=0}
+
     unit="kcal per capita per day, g protein or fat per capita per day, kg food wet matter per capita per day"
     min=0
     max=5000
-    
+
     
 
   } else if (per_capita==FALSE) {
@@ -76,22 +76,21 @@ calcFoodSupplyPast<-function(per_capita=TRUE, products=NULL, product_aggr=FALSE,
     out[,,c("wm")]=out[,,c("wm")]/1000
     out[,,c("kcal")]=out[,,c("kcal")]
     out[,,c("protein")]=out[,,c("protein")]/10^6
-    
+
     weight=NULL
     unit="Mio Kcal, Mt protein, Mt WM per year"
     min=0
     max=2e+10
   } else{stop("per_capita has to be binary")}
-  
+
   
   out<-collapseNames(out[,,attributes])
-  
+
   return(list(x=out, #datensatz (muss auf Iso-länder ebene sein)
               weight=weight, #wenn nicht absolute werte
               unit=unit,
               description="FAO food supply (including household waste)",
               min=min #für error checking (zB zw 0 und 1)
               )
-  ) 
+  )
 }
-

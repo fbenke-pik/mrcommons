@@ -44,7 +44,7 @@ calcAtmosphericDeposition <- function(datasource = "ACCMIP", glo_incl_oceans = F
     } else {
       out <- accmip2
     }
-    if ((cellular == FALSE) & (glo_incl_oceans == FALSE)) {
+    if ((cellular == FALSE) && (glo_incl_oceans == FALSE)) {
       mapping <- toolGetMapping(name = "CountryToCellMapping.rds", where = "mrcommons")
       out <- groupAggregate(out, query = mapping, dim = 1, from = "celliso", to = "iso")
       out  <- toolCountryFill(out, fill = 0, verbosity = 2)

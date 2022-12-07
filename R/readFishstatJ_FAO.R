@@ -1,5 +1,5 @@
 #' @title readFishstatJ_FAO
-#' @description  Reads data of fisheries generated using the FishstatJ app of FAO. 
+#' @description  Reads data of fisheries generated using the FishstatJ app of FAO.
 #' Read-in specifically, exports_value, exports_quantity, and/or overall production of fish/aquatic products.
 #'
 #'
@@ -30,7 +30,7 @@ readFishstatJ_FAO <- function(subtype = "Production") {
   data <- read.csv(file = paste(path.package("mrcommons"), paste0("/extdata/sectoral/", file), sep = ""))
 
   # Function to clean-up the data
-  fao_cleaning <- function(data = data, mapping = isocode_FAO, 
+  fao_cleaning <- function(data = data, mapping = isocode_FAO,
                            subsetvar = "Unit..Name.", UnitVar = "Tonnes - live weight", Value = "Production") {
 
     years_stats     <- paste0("X.", 1984:2018, ".") # wide format

@@ -9,12 +9,12 @@
 #' @seealso
 #' [calcNitrogenFixationPast()]
 #' @examples
-#' 
-#' \dontrun{ 
+#'
+#' \dontrun{
 #' calcOutput("calcNitrogenFixationPast")
 #' }
 #' @importFrom magpiesets findset
-#' 
+#'
 
 calcNitrogenFixationPast<-function(fixation_types="both",sum_plantparts=TRUE,cellular=FALSE,irrigation=FALSE){
   fix_biomass<-NULL
@@ -48,7 +48,7 @@ calcNitrogenFixationPast<-function(fixation_types="both",sum_plantparts=TRUE,cel
   }
 
   out<-collapseNames(mbind(fix_biomass,fix_freeliving))
-  
+
   return(list(x=out,
               weight=NULL,
               unit="Mt Nr",

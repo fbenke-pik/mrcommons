@@ -26,7 +26,7 @@ calcMacBaseLandUse <- function(subtype) {
   y <- new.magpie(cells_and_regions = iso_country$x, years = seq(2005,2150,5), names = source, sets = c("region","year","type"))
   y <- add_dimension(y, dim = 3.2, add = "c_LU_emi_scen", nm = c("SSP1", "SSP2", "SSP5", "SDP", "SDP_EI", "SDP_RC", "SDP_MC", "SSP2EU"))
   y <- add_dimension(y, dim = 3.3, add = "rcp",           nm = c("rcp20","rcp26","rcp45","none"))
-  
+
   if (subtype == "MAgPIE") {
 
     # Read emission baselines for MAC in REMIND. These data have been calcualted by external scripts, that calcualte the CO2 LUC MAC

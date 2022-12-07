@@ -34,7 +34,7 @@ correctLUH2v2 <- function(x, subtype) {
       bugged_years <- intersect(2001:2015, years)
       pasture      <- setYears(x["JPN", "y2000", c("pastr", "range")], NULL)
       x["JPN", bugged_years, "secdf"]            <- x["JPN", bugged_years, "secdf"] - dimSums(pasture, dim = 3)
-      x["JPN", bugged_years, c("pastr", "range")] <- x["JPN", bugged_years, c("pastr", "range")] + 
+      x["JPN", bugged_years, c("pastr", "range")] <- x["JPN", bugged_years, c("pastr", "range")] +
                                                       setYears(pasture, NULL)
 
       # correct for negative values (first in pasture than rangelands), if secondary forest is exceeded

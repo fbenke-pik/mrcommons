@@ -1,9 +1,9 @@
 #' Convert subtypes of the PBL_MACC_2019 data
-#' 
-#' Convert subtypes from PBL_MACC_2019 to data on ISO country level.#' 
-#' 
+#'
+#' Convert subtypes from PBL_MACC_2019 to data on ISO country level.#'
+#'
 #' @param x MAgPIE object containing PBL_MACC_2019 data on region level
-#' @param subtype data subtype. 
+#' @param subtype data subtype.
 #' "ch4coal","ch4oil","ch4gas","ch4wstl","ch4wsts","ch4rice","ch4animals","ch4anmlwst",
 #' "n2otrans","n2oadac","n2onitac","n2ofert","n2oanwst","n2owaste",
 #' "HFC_tot", "SF6_tot", "PFC_tot" or "baseline_sources"
@@ -13,9 +13,9 @@
 #' @seealso [readSource()]
 
 convertPBL_MACC_2019 <- function(x,subtype) {
-  
+
   map <- toolGetMapping(type = "regional", name = "regionmapping_IMAGE_PBL_MACC_2019.csv")
-  
+
   if(subtype=="baseline_sources") {
     # convert back to CH4 and N2O using AR4 GWP factors
      x[,,"ch4coal"] <- x[,,"ch4coal"]/25
@@ -55,7 +55,7 @@ convertPBL_MACC_2019 <- function(x,subtype) {
     # w[,,"HFC"]                             <- dimReduce(FGases[,,"SSP2-26-SPA0-V13.Emissions|HFC.kt HFC134a-equiv/yr"])
     # w[,,"PFC"]                             <- dimReduce(FGases[,,"SSP2-26-SPA0-V13.Emissions|PFC.kt CF4-equiv/yr"])
     # w[,,"SF6"]                             <- dimReduce(FGases[,,"SSP2-26-SPA0-V13.Emissions|SF6.kt SF6/yr"])
-    
+
     y <- toolAggregate(x,map,from = "RegionCode",to = "CountryCode",weight = w,dim = 1,wdim = 1)
     y <- toolCountryFill(y,fill = 0)
 

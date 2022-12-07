@@ -102,6 +102,3 @@ downloadISIMIP <- function(subtype) {
   }
 
 }
-
-
-

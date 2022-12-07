@@ -7,8 +7,8 @@
 #' @return List of magpie object with results on country level, weight on country level, unit and description.
 #' @author Benjamin Leon Bodirsky
 #' @examples
-#' 
-#' \dontrun{ 
+#'
+#' \dontrun{
 #' calcOutput("NitrogenBudgetNonagland")
 #' }
 #' @importFrom magclass setNames
@@ -17,19 +17,19 @@
 
 calcNitrogenBudgetNonagland<-function(deposition="CEDS",max_nue=0.95,cellular=FALSE){
   past<-findset("past")
-  
+
   fixation<-calcOutput("NitrogenBNF",cellular=cellular,aggregate = FALSE)[,,c("past","crop"),invert=TRUE]
-  
+
   deposition<-collapseNames(dimSums(calcOutput("AtmosphericDeposition",datasource=deposition, cellular=cellular, aggregate = FALSE)[,past,][,,c("past","crop"),invert=TRUE],dim=c(3.4)))
-  
+
   inputs<-mbind(
     add_dimension(fixation,dim = 3.2,nm = "fixation_freeliving"),
     add_dimension(deposition,dim = 3.2,nm = "deposition")
     )
-  
+
   outputs<-add_dimension(fixation,dim = 3.2,nm = "accumulation")
   outputs[,,]<-0
-  
+
   # Balanceflow based on assumption that everything above max_nue on country level is definetly a bug
   if(!is.null(max_nue)){
     balanceflow<-(dimSums(outputs,dim=3.2))/max_nue-dimSums(inputs,dim=3.2)
@@ -41,7 +41,7 @@ calcNitrogenBudgetNonagland<-function(deposition="CEDS",max_nue=0.95,cellular=FA
   balanceflow<-add_dimension(balanceflow,dim = 3.2,nm = "balanceflow")
   surplus<-add_dimension(dimSums(inputs,dim=3.2)+dimSums(balanceflow,dim=3.2)-dimSums(outputs,dim=3.2),dim = 3.2,nm = "surplus")
   out<-mbind(outputs,inputs,balanceflow,surplus)
-  
+
   return(list(
     x=out,
     weight=NULL,

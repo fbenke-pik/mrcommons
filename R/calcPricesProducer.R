@@ -28,7 +28,7 @@ calcPricesProducer <- function(products = "kcr", calculation = "VoP", weighting 
 
     
     getNames(pricesProdFAO)[getNames(pricesProdFAO) == "254|Oil palm fruit"] <- "254|Oil, palm fruit"
-   
+
     # weight: Production
     if(weighting == "production"){
        mappingFAO <- toolGetMapping("FAO2LUH2MAG_croptypes.csv", type = "sectoral", where = "mrcommons")
@@ -45,16 +45,16 @@ calcPricesProducer <- function(products = "kcr", calculation = "VoP", weighting 
     } else if (weighting == "consumption"){
       #map prices to FoodBalanceITems first
     mappingFAO <- toolGetMapping("FAOitems_online.csv", type = "sectoral")
-    
+
     weightProd <- collapseNames(readSource("FAO_online", "Crop")[, , "production"])
     witemsIntersect <- intersect(getNames(pricesProdFAO), unique(mappingFAO$ProductionItem))
-  
+
     wnames <- intersect(getNames(weightProd), getNames(pricesProdFAO[, , witemsIntersect]))
     wyears <- intersect(getYears(weightProd), getYears(pricesProdFAO[, , witemsIntersect]))
     pricesProdFAO <- toolAggregate(pricesProdFAO[,wyears, wnames], rel = mappingFAO,
-                                       from = "ProductionItem", to = "FoodBalanceItem", weight = weightProd[,wyears,wnames], 
+                                       from = "ProductionItem", to = "FoodBalanceItem", weight = weightProd[,wyears,wnames],
                                        partrel = TRUE, dim = 3, wdim = 3)
-    
+
     weightPrice <- collapseNames(calcOutput("FAOharmonized", aggregate = FALSE)[,,"food"])
     itemsIntersect <- intersect(getNames(pricesProdFAO), unique(mappingFAO$FoodBalanceItem))
     names <- intersect(getNames(weightPrice), getNames(pricesProdFAO[, , itemsIntersect]))
@@ -65,7 +65,7 @@ calcPricesProducer <- function(products = "kcr", calculation = "VoP", weighting 
                                          from = "FoodBalanceItem", to = "k", weight = weightPrice[, years, names],
                                          dim = 3, wdim = 3)
     } else {stop("only production and consumption weights")}
-    
+
     missing <- setdiff(findset("kcr"), getNames(pricesProdFAOkcr))
 
     # Fill with maiz' value the missing crops (betr,begr,foddr)
@@ -98,7 +98,7 @@ calcPricesProducer <- function(products = "kcr", calculation = "VoP", weighting 
 
     # Value of production (USD05MER -> USD05PPP)
     vop <- calcOutput("VoPcrops", aggregate = FALSE)
- 
+
     production <- collapseNames(calcOutput("Production", products = "kcr", aggregate = FALSE, attributes = "dm"))
 
     years <- intersect(getYears(production), getYears(vop))
@@ -123,12 +123,12 @@ calcPricesProducer <- function(products = "kcr", calculation = "VoP", weighting 
   } else if (products == "kli") {
 
     if (calculation == "FAO") {
-    
+
     pricesProdFAO <- readSource("FAO_online", "PricesProducerAnnual") # USD05 per ton
-   
+
     #get mapping
     mappingFAO <- toolGetMapping("FAOitems_online.csv", type = "sectoral", where = "mappingfolder") # Reads mapping
-   
+
    if (weighting == "production"){
     itemsIntersect <- intersect(getNames(pricesProdFAO), unique(mappingFAO$ProductionItem))
 
@@ -141,19 +141,19 @@ calcPricesProducer <- function(products = "kcr", calculation = "VoP", weighting 
       # Aggregation to magpie objects
     pricesProdFAOkli <- toolAggregate(pricesProdFAO[, years, names], rel = mappingFAO, from = "ProductionItem",
                                            to = "k", weight = weightProd[, years, names], dim = 3, wdim = 3)
-                                           
+
     } else if (weighting == "consumption"){
       #map prices to FoodBalanceITems first
     mappingFAO <- toolGetMapping("FAOitems_online.csv", type = "sectoral")
-    
+
     weightProd <- collapseNames(readSource("FAO", "LivePrim")[, , "production"])
     witemsIntersect <- intersect(getNames(pricesProdFAO), unique(mappingFAO$ProductionItem))
 
     wnames <- intersect(getNames(weightProd), getNames(pricesProdFAO[, , witemsIntersect]))
     wyears <- intersect(getYears(weightProd), getYears(pricesProdFAO[, , witemsIntersect]))
-    
+
     pricesProdFAO <- toolAggregate(pricesProdFAO[,wyears, wnames], rel = mappingFAO,
-                                       from = "ProductionItem", to = "FoodBalanceItem", weight = weightProd[,wyears,wnames], 
+                                       from = "ProductionItem", to = "FoodBalanceItem", weight = weightProd[,wyears,wnames],
                                        partrel = TRUE, dim = 3, wdim = 3)
 
     weightPrice <- collapseNames(calcOutput("FAOharmonized", aggregate = FALSE)[,,"food"])
@@ -181,7 +181,7 @@ calcPricesProducer <- function(products = "kcr", calculation = "VoP", weighting 
       weight  <- collapseNames(dimSums(calcOutput("FAOmassbalance", aggregate = FALSE)[,,"dm"][,,c("food", "flour1")],
                          dim = 3.2))[,,kli]
     } else {stop ("invalid type")}
-      
+
       years <- intersect(getYears(weight), getYears(x))
       names <- intersect(getNames(weight), getNames(x))
 

@@ -10,8 +10,8 @@
 #' @seealso
 #' [calcNitrogenBudgetCropland()]
 #' @examples
-#' 
-#' \dontrun{ 
+#'
+#' \dontrun{
 #' calcOutput("FertilizerByCrop")
 #' }
 #' @importFrom magpiesets findset
@@ -22,11 +22,11 @@ calcFertilizerByCrop<-function(indicator="total",deposition="Nsurplus2",cellular
   past<-findset("past")
   nb<-calcOutput("NitrogenBudgetCropland",deposition=deposition,cellular=cellular,aggregate = FALSE)
   kcr<-findset("kcr")
-  
+
   withdrawal=calcOutput("NitrogenWithdrawalByCrop",cellular=cellular,aggregate=FALSE,indicator="total")
   withdrawal=dimSums(withdrawal,dim=3.1)
-  inputs<-nb[,,c("fertilizer","som","deposition","manure_conf","bg_recycling","ag_recycling","ag_ash","fixation_freeliving")]  
-  
+  inputs<-nb[,,c("fertilizer","som","deposition","manure_conf","bg_recycling","ag_recycling","ag_ash","fixation_freeliving")]
+
   inputs_per_crop=inputs/dimSums(withdrawal,dim=3.1)*withdrawal
   if (indicator=="by_physical_area"){
     area<-collapseNames(calcOutput("Croparea",aggregate = FALSE,physical=TRUE,cellular=cellular,sectoral="kcr")[,past,])
@@ -52,7 +52,7 @@ calcFertilizerByCrop<-function(indicator="total",deposition="Nsurplus2",cellular
     out[is.nan(out)]<-0
     unit="Mt Nr"
   } else {stop("unknown indicator")}
-  
+
   return(list(x=out,
               weight=weight,
               unit=unit,

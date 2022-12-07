@@ -6,7 +6,7 @@
 #' @author Kristine Karstens, Felicitas Beier
 #' @seealso
 #' [correctLPJmL()]
-#' 
+#'
 #' @examples
 #' \dontrun{
 #' readSource("LPJmL", subtype="soilc", convert="onlycorrect")
@@ -20,6 +20,6 @@ correctLPJmL <- function(x){
   if (length(getCells(x))==59199) {
     x <- toolCell2isoCell(x)
   }
-  
+
   return(x)
 }

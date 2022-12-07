@@ -1,26 +1,26 @@
 #' Convert FRA 2015 data
 #' Update dd-Jmm-jjjj - Please add comment if changes made here (Abhi)
-#' 
+#'
 #' @param x MAgPIE object containing original values
 #' @param subtype The FAO FRA 2015 file type, e.g.: fac, production, biodiversity or anndat.
 #' @return Data as MAgPIE object with common country list
 #' @author Abhijeet Mishra
 #' @seealso [readSource()],
 #' @examples
-#' 
+#'
 #' \dontrun{ a <- readSource("FRA2015","production",convert=TRUE)}
 #' @importFrom magclass magpiesort
-#' 
+#'
 
 convertFAO_FRA2015 <- function(x,subtype){
   if(any(c("fac","production","biodiversity","anndat")%in% subtype)){
     x <- toolCountryFill(x,fill = 0)
     if (any(c("ProdFor","MulUseFor") %in% getNames(x))) {
-      x[,,"ProdFor"]    <- x[,,"ProdFor"]  /1000 # conversion from 1000ha to Million ha 
-      x[,,"MulUseFor"]  <- x[,,"MulUseFor"]/1000 # conversion from 1000ha to Million ha 
+      x[,,"ProdFor"]    <- x[,,"ProdFor"]  /1000 # conversion from 1000ha to Million ha
+      x[,,"MulUseFor"]  <- x[,,"MulUseFor"]/1000 # conversion from 1000ha to Million ha
     }
     if (any(c("NetAnnIncr","IncrConif", "IncrBroa")%in% getNames(x))) {
-      x[,,"NetAnnIncr"] <- x[,,"NetAnnIncr"]*1000 # conversion from m3/ha/yr to mil.m3/mil.ha/yr 
+      x[,,"NetAnnIncr"] <- x[,,"NetAnnIncr"]*1000 # conversion from m3/ha/yr to mil.m3/mil.ha/yr
       x[,,"IncrConif"]  <- x[,,"IncrConif"]  *1000 # conversion from m3/ha/yr to mil.m3/mil.ha/yr
       x[,,"IncrBroa"]   <- x[,,"IncrBroa"]   *1000 # conversion from m3/ha/yr to mil.m3/mil.ha/yr
     }
