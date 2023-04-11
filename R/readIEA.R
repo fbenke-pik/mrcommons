@@ -16,7 +16,6 @@
 #' @importFrom madrat toolCountry2isocode
 #'
 readIEA <- function(subtype) {
-
   if (subtype == "EnergyBalances") { # IEA energy balances until 2020 (incomplete 2021) (data updated in August, 2022)
 
     energyBalancesFile <- "IEA-Energy-Balances-2022/worldbig.csv"
@@ -34,18 +33,36 @@ readIEA <- function(subtype) {
       mutate(!!sym("ktoe") := as.numeric(!!sym("ktoe")))
 
     mdata <- as.magpie(data,
-                       datacol = dim(data)[2], spatial = which(colnames(data) == "COUNTRY"),
-                       temporal = which(colnames(data) == "TIME")
+      datacol = dim(data)[2], spatial = which(colnames(data) == "COUNTRY"),
+      temporal = which(colnames(data) == "TIME")
     )
 
   } else if (subtype == "Emissions") {
-    data <- read.csv("emissions2013.csv")
-    data$COUNTRY <- toolCountry2isocode(data$COUNTRY, warn = FALSE) # nolint
-    data <- data[!is.na(data$COUNTRY), ]
-    data$TIME <- paste("y", data$TIME, sep = "") # nolint
-    if (names(data)[[5]] == "MtCO2") data <- data[!is.na(data$MtCO2), ]
-    if (names(data)[[5]] == "MtCO2") data$MtCO2 <- suppressWarnings(as.numeric(data$MtCO2)) # nolint
-    mdata <- as.magpie(data, datacol = dim(data)[2])
+    data.ghg <- fread( # nolint object_name_linter
+      file = "IEA-GHG-Emissions-2022/WORLD_GHG.TXT",
+      col.names = c("COUNTRY", "PRODUCT", "TIME", "FLOW", "GAS", "value"),
+      colClasses = c("character", "character", "numeric", "character", "character", "character"),
+      stringsAsFactors = FALSE, na.strings = c("x", "..", "c"), skip = 0, showProgress = FALSE
+    ) %>%
+      mutate(!!sym("value") := as.numeric(!!sym("value"))) %>%
+      filter(!is.na(!!sym("value"))) %>%
+      select("COUNTRY", "TIME", "PRODUCT", "FLOW", "GAS", "value")
+
+    data.co2 <- fread( # nolint object_name_linter
+      file = "IEA-GHG-Emissions-2022/WORLD_BIGCO2.TXT",
+      col.names = c("COUNTRY", "PRODUCT", "TIME", "FLOW", "value"),
+      colClasses = c("character", "character", "numeric", "character", "character"),
+      stringsAsFactors = FALSE, na.strings = c("x", "..", "c"), skip = 0, showProgress = FALSE
+    ) %>%
+      mutate(!!sym("value") := as.numeric(!!sym("value")), GAS = "CO2") %>%
+      filter(!is.na(!!sym("value"))) %>%
+      select("COUNTRY", "TIME", "PRODUCT", "FLOW", "GAS", "value")
+
+    mdata <- as.magpie(rbind(data.ghg, data.co2), spatial = 1) %>%
+      suppressWarnings()
+
+    getItems(mdata, dim = 1) <- toolCountry2isocode(getItems(mdata, dim = 1), warn = FALSE)
+    mdata <- mdata[!is.na(getItems(mdata, dim = 1)), , ]
 
   } else {
     stop("Not a valid subtype!")

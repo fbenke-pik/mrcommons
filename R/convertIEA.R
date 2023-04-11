@@ -12,48 +12,48 @@
 #' @importFrom tidyr unite
 #'
 convertIEA <- function(x, subtype) {
+
+  # add Kosovo to Serbia
+  x1 <- x["KOS", , ]
+  getItems(x1, dim = 1) <- c("SRB")
+  x["SRB", , ] <- x["SRB", , ] + x1
+  x <- x[c("KOS"), , , invert = TRUE]
+
+  # calculate weight to be used for regional disaggregations
+  wp <- calcOutput("Population", aggregate = FALSE)[, 2010, "pop_SSP2"]
+  wg <- calcOutput("GDP", aggregate = FALSE)[, 2010, "gdp_SSP2"]
+  wp <- wp / max(wp)
+  getNames(wp) <- "SSP2"
+  wg <- wg / max(wg)
+  getNames(wg) <- "SSP2"
+  w <- wp + wg
+
+  # disaggregating Other Africa (IAF), Other non-OECD Americas (ILA) and
+  # Other non-OECD Asia (IAS) regions to countries
+  mappingfile <- toolGetMapping(type = "regional", name = "regionmappingIEA_Other2016.csv", returnPathOnly = TRUE)
+  mapping <- read.csv2(mappingfile, stringsAsFactors = TRUE) %>%
+    filter(!(!!sym("CountryCode") %in% getItems(x, dim = 1)))
+  xadd <- toolAggregate(x[levels(mapping[[2]]), , ], mapping, weight = w[as.vector(mapping[[1]]), , ])
+  x <- x[setdiff(getItems(x, dim = 1), as.vector(unique(mapping[[2]]))), , ]
+  x <- mbind(x, xadd)
+
+  # disaggregating extinct countries USSR (SUN) and Yugoslavia (YUG)
+  ISOhistorical <- read.csv2(system.file("extdata", "ISOhistorical.csv", package = "madrat"), stringsAsFactors = FALSE) # nolint
+  ISOhistorical <- ISOhistorical[!ISOhistorical$toISO == "SCG", ] # nolint
+  x <- toolISOhistorical(x,
+    mapping = ISOhistorical,
+    additional_weight = w[ISOhistorical[ISOhistorical$fromISO %in% c("YUG", "SUN"), "toISO"], , ]
+  )
+  x[is.na(x)] <- 0
+
+  # filling missing country data
+  x <- toolCountryFill(x, 0)
+
   if (subtype == "EnergyBalances") {
-
-    # aggregate Kosovo to Serbia
-    x1 <- x["KOS", , ]
-    getItems(x1, dim = 1) <- c("SRB")
-    x["SRB", , ] <- x["SRB", , ] + x1
-    x <- x[c("KOS"), , , invert = TRUE]
-
     # convert electricity outputs (unit conversion between ktoe and GWh)
     x[, , c("ELOUTPUT", "ELMAINE", "ELAUTOE", "ELMAINC", "ELAUTOC")] <- 0.0859845 *
-                                                        x[, , c("ELOUTPUT", "ELMAINE", "ELAUTOE", "ELMAINC", "ELAUTOC")]
+      x[, , c("ELOUTPUT", "ELMAINE", "ELAUTOE", "ELMAINC", "ELAUTOC")]
 
-    # calculate weight to be used for regional disaggregations
-    wp <- calcOutput("Population", aggregate = FALSE)[, 2010, "pop_SSP2"]
-    wg <- calcOutput("GDP", aggregate = FALSE)[, 2010, "gdp_SSP2"]
-    wp <- wp / max(wp)
-    getNames(wp) <- "SSP2"
-    wg <- wg / max(wg)
-    getNames(wg) <- "SSP2"
-    w <- wp + wg
-
-    # disaggregating Other Africa (IAF),
-    # Other non-OECD Americas (ILA) and
-    # Other non-OECD Asia (IAS) regions to countries
-    mappingfile <- toolGetMapping(type = "regional", name = "regionmappingIEA_Other2016.csv", returnPathOnly = TRUE)
-    mapping <- read.csv2(mappingfile, stringsAsFactors = TRUE) %>%
-      filter(!(!!sym("CountryCode") %in% getItems(x, dim = 1)))
-    xadd <- toolAggregate(x[levels(mapping[[2]]), , ], mapping, weight = w[as.vector(mapping[[1]]), , ])
-    x <- x[setdiff(getItems(x, dim = 1), as.vector(unique(mapping[[2]]))), , ]
-    x <- mbind(x, xadd)
-
-    # disaggregating extinct countries USSR (SUN) and Yugoslavia (YUG)
-    ISOhistorical <- read.csv2(system.file("extdata", "ISOhistorical.csv", package = "madrat"), stringsAsFactors = FALSE) # nolint
-    ISOhistorical <- ISOhistorical[!ISOhistorical$toISO == "SCG", ] # nolint
-    x <- toolISOhistorical(x,
-      mapping = ISOhistorical,
-      additional_weight = w[ISOhistorical[ISOhistorical$fromISO %in% c("YUG", "SUN"), "toISO"], , ]
-    )
-    x[is.na(x)] <- 0
-
-    # filling missing country data
-    x <- toolCountryFill(x, 0)
 
     # These changes may reduce the amount of CHP plants to below what is actually
     # deployed in a region, because heat reporting is obscure. In some statistics,
