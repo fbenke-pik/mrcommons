@@ -79,6 +79,37 @@ readEurostatEmissionsLatest <- function() {
   gbr[, , "CH4"] <- gbr[, , "CH4"] * 28 / 25
   gbr[, , "N2O"] <- gbr[, , "N2O"] * 265 / 298
 
+  # read in GBR 2020 and 2021 from UNFCCC and transform values to match Eurostat ----
+  gbr2020 <- readSource("UNFCCC", convert = FALSE)["GBR", c(2020, 2021), c("kt CO2", "kt CH4", "kt N2O")] / 1000
+  getSets(gbr2020)[3] <- "sector"
+  getSets(gbr2020)[4] <- "emi"
+  getNames(gbr2020, dim = 2) <- c("CO2", "CH4", "N2O")
+  gbr2020 <- dimOrder(gbr2020, perm = c(2, 1), dim = 3)
+
+  # convert to CH4 and N2O to use AR5 GWP values instead of AR4
+  gbr2020[, , "CH4"] <- gbr2020[, , "CH4"] * 28
+  gbr2020[, , "N2O"] <- gbr2020[, , "N2O"] * 265
+
+  # map sector values from UNFCCC labels to CRF codes
+  getNames(gbr2020, dim = 2) <- gsub("\\|.{3}$", "", getNames(gbr2020, dim = 2))
+
+  sectorMapGbr <- toolGetMapping("UNFCCCtoEurostat.csv", type = "sectoral", where = "mrcommons") %>%
+    filter(.data$crf %in% unique(sectorMap$crf))
+
+  gbr2020 <- gbr2020[, , sectorMapGbr$unfccc_label]
+  sectorMapGbr <- sectorMapGbr[match(getNames(gbr2020, dim = 2), sectorMapGbr$unfccc_label), ]
+  getNames(gbr2020, dim = 2) <- sectorMapGbr[, "crf"]
+
+  # map sector values from CRF codes to Eurostat labels
+  sectorMap <- toolGetMapping("EurostatCRFLabels.csv", type = "sectoral", where = "mrcommons")
+  sectorMap <- sectorMap[match(getNames(gbr2020, dim = 2), sectorMap$crf), ]
+  getNames(gbr2020, dim = 2) <- sectorMap[, "label"]
+
+  # merge GBR data from Eurostat 2019 and latest UNFCCC
+  gbr["GBR", c(2020, 2021), getNames(gbr2020)] <- gbr2020
+
+  # match GBR data to x dimensions
   gbr <- magclass::matchDim(gbr, x, dim = 3)
+
   return(mbind(x, gbr))
 }
