@@ -732,40 +732,40 @@ toolFixIEAdataForIndustrySubsectors <- function(data, threshold = 1e-2) {
     complete(flow = c(flows_to_fix, "INONSPEC"),
              fill = list(subsector = "otherInd"))
 
-  data_industry_fixed <- data_industry_fixed %>%
-    complete(nesting(!!!syms(c("iso3c", "region", "year", "product"))),
-             flow = c(flows_to_fix, "INONSPEC"),
-             fill = list(value = 0)) %>%
-    group_by(.data$iso3c, .data$year, .data$product) %>%
-    right_join(subsector_mapping, by = "flow") %>%
-    # compute subsector totals
-    group_by(.data$subsector, .add = TRUE) %>%
-    mutate("subsector.total" = sum(.data$value),
-           "subsector.count" = n()) %>%
-    ungroup(.data$subsector) %>%
-    mutate(
-      # each subsector consumes at least <threshold> of the total consumption of
-      # each product (with the exception of heat, which is only consumed in the
-      #  otherInd subsector)
-      "subsector.min" = ifelse("HEAT" == .data$product, 0,
-                             threshold * sum(.data$value)),
-      # if total subsector consumption is below the minimum, consumption must be
-      # added
-      "subsector.add" = pmax(0, .data$subsector.min - .data$subsector.total),
-      # each flow gets consumption added according to its share in total
-      # subsector consumption
-      "flow.add" = ifelse(0 != .data$subsector.total,
-                        (.data$subsector.add / .data$subsector.total * .data$value),
-                        .data$subsector.add / .data$subsector.count),
-      # if the additional flow is zero, consumption has to be subtracted from\
-      # this flow, in relation to its share of all flows with
-      # more-than-threshold consumption
-      "flow.add" = ifelse(0 != .data$flow.add,
-                          .data$flow.add,
-                          (-sum(.data$flow.add) * .data$value / sum(.data$value[0 == .data$flow.add]))),
-      "value.new" = .data$value + .data$flow.add) %>%
-      ungroup() %>%
-      select("iso3c", "region", "year", "product", "flow", "value" = "value.new")
+  # data_industry_fixed <- data_industry_fixed %>%
+  #   complete(nesting(!!!syms(c("iso3c", "region", "year", "product"))),
+  #            flow = c(flows_to_fix, "INONSPEC"),
+  #            fill = list(value = 0)) %>%
+  #   group_by(.data$iso3c, .data$year, .data$product) %>%
+  #   right_join(subsector_mapping, by = "flow") %>%
+  #   # compute subsector totals
+  #   group_by(.data$subsector, .add = TRUE) %>%
+  #   mutate("subsector.total" = sum(.data$value),
+  #          "subsector.count" = n()) %>%
+  #   ungroup(.data$subsector) %>%
+  #   mutate(
+  #     # each subsector consumes at least <threshold> of the total consumption of
+  #     # each product (with the exception of heat, which is only consumed in the
+  #     #  otherInd subsector)
+  #     "subsector.min" = ifelse("HEAT" == .data$product, 0,
+  #                            threshold * sum(.data$value)),
+  #     # if total subsector consumption is below the minimum, consumption must be
+  #     # added
+  #     "subsector.add" = pmax(0, .data$subsector.min - .data$subsector.total),
+  #     # each flow gets consumption added according to its share in total
+  #     # subsector consumption
+  #     "flow.add" = ifelse(0 != .data$subsector.total,
+  #                       (.data$subsector.add / .data$subsector.total * .data$value),
+  #                       .data$subsector.add / .data$subsector.count),
+  #     # if the additional flow is zero, consumption has to be subtracted from\
+  #     # this flow, in relation to its share of all flows with
+  #     # more-than-threshold consumption
+  #     "flow.add" = ifelse(0 != .data$flow.add,
+  #                         .data$flow.add,
+  #                         (-sum(.data$flow.add) * .data$value / sum(.data$value[0 == .data$flow.add]))),
+  #     "value.new" = .data$value + .data$flow.add) %>%
+  #     ungroup() %>%
+  #     select("iso3c", "region", "year", "product", "flow", "value" = "value.new")
 
   ## 3.3 Replace and append fixed data ----
   data_industry_fixed_overwrite <- data_industry_fixed %>%
