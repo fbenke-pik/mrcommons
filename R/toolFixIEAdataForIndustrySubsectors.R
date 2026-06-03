@@ -41,7 +41,7 @@
 # TODO Deal with linter warnings
 # TODO Decide where to put this
 
-toolFixIEAdataForIndustrySubsectors <- function(data, threshold = 1e-2, minimum = FALSE) {
+toolFixIEAdataForIndustrySubsectors <- function(data, threshold = 1e-2, additionalCorrections = TRUE) {
 
   ####
 
@@ -606,7 +606,7 @@ toolFixIEAdataForIndustrySubsectors <- function(data, threshold = 1e-2, minimum 
   rm(replace, subtract, sumFlows)
   rm(list = ls(pattern = "^data_"))
 
-  if(minimum == TRUE) {
+  if(additionalCorrections == FALSE) {
     return(data)
   }
 
