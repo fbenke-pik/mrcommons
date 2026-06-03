@@ -607,6 +607,7 @@ toolFixIEAdataForIndustrySubsectors <- function(data, threshold = 1e-2, addition
   rm(list = ls(pattern = "^data_"))
 
   if(additionalCorrections == FALSE) {
+    print("We dont do any additional stuff")
     return(data)
   }
 
