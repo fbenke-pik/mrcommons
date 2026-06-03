@@ -41,7 +41,7 @@
 # TODO Deal with linter warnings
 # TODO Decide where to put this
 
-toolFixIEAdataForIndustrySubsectors <- function(data, threshold = 1e-2) {
+toolFixIEAdataForIndustrySubsectors <- function(data, threshold = 1e-2, minimum = FALSE) {
 
   ####
 
@@ -601,9 +601,14 @@ toolFixIEAdataForIndustrySubsectors <- function(data, threshold = 1e-2) {
 
   data[is.na(data)] <- 0
 
+
   # clean up no longer used data to save space
   rm(replace, subtract, sumFlows)
   rm(list = ls(pattern = "^data_"))
+
+  if(minimum == TRUE) {
+    return(data)
+  }
 
   # 2. Prepare Industry Subsector Time Series ----
 
